@@ -6,7 +6,7 @@ const QuoteList = ({ quotes }) => {
     const parts = text.split(new RegExp(`(${highlights.join('|')})`, 'gi'));
     return parts.map((part, index) =>
       highlights.includes(part) ? (
-        <span key={index} className="font-bold">{part}</span>
+        <span key={index} className="font-bold text-blue-500">{part}</span>
       ) : (
         part
       )
@@ -18,7 +18,7 @@ const QuoteList = ({ quotes }) => {
       {quotes.map((quote, index) => (
         <div key={index} className="border border-[#DDDDDD] p-4 my-4 rounded shadow bg-[#e4e2df]">
           <p className="whitespace-pre-wrap text-[#333333]">
-            {highlightText(quote.quote, quote.highlight)}
+            {highlightText(quote.quote, quote.highlight || [])}
           </p>
           <p className="text-[#888888]"><em>{quote.date}</em> - <strong>{quote.writer}</strong></p>
         </div>
