@@ -1,28 +1,17 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "server.js",
-        "use": "@vercel/node"
-      },
-      {
-        "src": "backend/api/*.js",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/api/login",
-        "dest": "/backend/api/login.js"
-      },
-      {
-        "src": "/api/quotes",
-        "dest": "/backend/api/quotes.js"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/server.js"
-      }
-    ]
-  }
-  
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/login",
+      "dest": "/backend/api/login.js"
+    },
+    {
+      "src": "/api/quotes",
+      "dest": "/backend/api/quotes.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/server.js"
+    }
+  ]
+}
