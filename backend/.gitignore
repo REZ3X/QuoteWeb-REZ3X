@@ -1,2 +1,4 @@
 .env
 node_modules
+newUpdateUserPassword.js
+addUser.js
