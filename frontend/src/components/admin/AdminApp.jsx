@@ -13,17 +13,24 @@ function AdminApp() {
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
+    const role = localStorage.getItem('role');
     if (!userId) {
       navigate('/login');
     } else {
-      fetchQuotes();
+      fetchQuotes(role);
     }
   }, []);
 
-  const fetchQuotes = async () => {
+  const fetchQuotes = async (role) => {
     try {
       const response = await axios.get(`${API_URL}/quotes`, { withCredentials: true });
-      setQuotes(response.data);
+      if (role === 'admin') {
+        setQuotes(response.data);
+      } else {
+        const userId = localStorage.getItem('userId');
+        const userQuotes = response.data.filter(quote => quote.user_id === parseInt(userId));
+        setQuotes(userQuotes);
+      }
     } catch (error) {
       console.error('Error fetching quotes:', error);
     }
@@ -37,7 +44,7 @@ function AdminApp() {
   const handleAddQuote = async () => {
     try {
       await axios.post(`${API_URL}/quotes`, newQuote, { withCredentials: true });
-      fetchQuotes();
+      fetchQuotes(localStorage.getItem('role'));
       setNewQuote({ quote: '', date: '', writer: '' });
     } catch (error) {
       console.error('Error adding quote:', error);
@@ -51,7 +58,7 @@ function AdminApp() {
   const handleUpdateQuote = async () => {
     try {
       await axios.put(`${API_URL}/quotes/${editingQuote.id}`, editingQuote, { withCredentials: true });
-      fetchQuotes();
+      fetchQuotes(localStorage.getItem('role'));
       setEditingQuote(null);
     } catch (error) {
       console.error('Error updating quote:', error);
@@ -61,7 +68,7 @@ function AdminApp() {
   const handleDeleteQuote = async (id) => {
     try {
       await axios.delete(`${API_URL}/quotes/${id}`, { withCredentials: true });
-      fetchQuotes();
+      fetchQuotes(localStorage.getItem('role'));
     } catch (error) {
       console.error('Error deleting quote:', error);
     }
