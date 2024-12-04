@@ -14,27 +14,27 @@ app.use((req, res, next) => {
     next();
 });
 
-// Forward API requests to the backend
+// Proxy API requests to the backend
 app.use('/api', createProxyMiddleware({
-    target: process.env.BACKEND_URL, // Use the backend URL from environment variables
+    target: process.env.BACKEND_URL,  // Use the backend URL from environment variables
     changeOrigin: true,
     pathRewrite: {
-        '^/api': '/api', // Ensure the path remains unchanged
+        '^/api': '/api',  // Ensure the path remains unchanged
     },
-    onProxyReq: (proxyReq) => {
+    onProxyReq: (proxyReq, req) => {
         proxyReq.setHeader('X-Forwarded-Proto', 'https');
+        if (req.headers['authorization']) {
+            proxyReq.setHeader('Authorization', req.headers['authorization']);  // Forward authorization token
+        }
     }
 }));
 
 // Proxy static files for frontend (if needed)
-/*
 app.use('/', createProxyMiddleware({
-    target: process.env.FRONTEND_URL, // Use the frontend URL from environment variables
+    target: process.env.FRONTEND_URL,  // Use the frontend URL from environment variables
     changeOrigin: true,
 }));
-*/
 
-// Start the reverse proxy server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Reverse proxy running on port ${PORT}`);
