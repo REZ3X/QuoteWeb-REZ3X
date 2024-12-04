@@ -21,7 +21,7 @@ const QuoteApp = () => {
 
   const fetchQuotes = async () => {
     try {
-      const response = await axios.get(`${API_URL}/quotes`);
+      const response = await axios.get(`${API_URL}/quotes`, { withCredentials: true });
       setQuotes(response.data);
     } catch (error) {
       console.error('Error fetching quotes:', error);
