@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = '/api/proxy'; // Adjusted to use the proxy
 
 function AdminApp() {
   const [quotes, setQuotes] = useState([]);
@@ -86,77 +86,77 @@ function AdminApp() {
   };
 
   return (
-    <div className="container mx-auto p-4 mt-16">
-      <h1 className="text-2xl font-bold">Admin Panel</h1>
-      <button onClick={handleLogout} className="bg-red-500 text-white p-2 mb-4">Logout</button>
-      <div className="mt-4">
-        <input
-          type="text"
-          name="quote"
-          placeholder="Quote"
-          value={newQuote.quote}
-          onChange={handleInputChange}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="date"
-          name="date"
-          placeholder="Date"
-          value={newQuote.date}
-          onChange={handleInputChange}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          name="writer"
-          placeholder="Writer"
-          value={newQuote.writer}
-          onChange={handleInputChange}
-          className="border p-2 mr-2"
-        />
-        <button onClick={handleAddQuote} className="bg-blue-500 text-white p-2">Add Quote</button>
-      </div>
-      <div className="mt-4">
-        {quotes.map((quote) => (
-          <div key={quote.id} className="border p-2 my-2">
-            <p>{quote.quote}</p>
-            <p>{quote.date}</p>
-            <p>{quote.writer}</p>
-            <button onClick={() => handleEditQuote(quote)} className="bg-yellow-500 text-white p-2 mr-2">Edit</button>
-            <button onClick={() => handleDeleteQuote(quote.id)} className="bg-red-500 text-white p-2">Delete</button>
-          </div>
-        ))}
-      </div>
-      {editingQuote && (
+      <div className="container mx-auto p-4 mt-16">
+        <h1 className="text-2xl font-bold">Admin Panel</h1>
+        <button onClick={handleLogout} className="bg-red-500 text-white p-2 mb-4">Logout</button>
         <div className="mt-4">
           <input
-            type="text"
-            name="quote"
-            placeholder="Quote"
-            value={editingQuote.quote}
-            onChange={(e) => setEditingQuote({ ...editingQuote, quote: e.target.value })}
-            className="border p-2 mr-2"
+              type="text"
+              name="quote"
+              placeholder="Quote"
+              value={newQuote.quote}
+              onChange={handleInputChange}
+              className="border p-2 mr-2"
           />
           <input
-            type="date"
-            name="date"
-            placeholder="Date"
-            value={editingQuote.date}
-            onChange={(e) => setEditingQuote({ ...editingQuote, date: e.target.value })}
-            className="border p-2 mr-2"
+              type="date"
+              name="date"
+              placeholder="Date"
+              value={newQuote.date}
+              onChange={handleInputChange}
+              className="border p-2 mr-2"
           />
           <input
-            type="text"
-            name="writer"
-            placeholder="Writer"
-            value={editingQuote.writer}
-            onChange={(e) => setEditingQuote({ ...editingQuote, writer: e.target.value })}
-            className="border p-2 mr-2"
+              type="text"
+              name="writer"
+              placeholder="Writer"
+              value={newQuote.writer}
+              onChange={handleInputChange}
+              className="border p-2 mr-2"
           />
-          <button onClick={handleUpdateQuote} className="bg-green-500 text-white p-2">Update Quote</button>
+          <button onClick={handleAddQuote} className="bg-blue-500 text-white p-2">Add Quote</button>
         </div>
-      )}
-    </div>
+        <div className="mt-4">
+          {quotes.map((quote) => (
+              <div key={quote.id} className="border p-2 my-2">
+                <p>{quote.quote}</p>
+                <p>{quote.date}</p>
+                <p>{quote.writer}</p>
+                <button onClick={() => handleEditQuote(quote)} className="bg-yellow-500 text-white p-2 mr-2">Edit</button>
+                <button onClick={() => handleDeleteQuote(quote.id)} className="bg-red-500 text-white p-2">Delete</button>
+              </div>
+          ))}
+        </div>
+        {editingQuote && (
+            <div className="mt-4">
+              <input
+                  type="text"
+                  name="quote"
+                  placeholder="Quote"
+                  value={editingQuote.quote}
+                  onChange={(e) => setEditingQuote({ ...editingQuote, quote: e.target.value })}
+                  className="border p-2 mr-2"
+              />
+              <input
+                  type="date"
+                  name="date"
+                  placeholder="Date"
+                  value={editingQuote.date}
+                  onChange={(e) => setEditingQuote({ ...editingQuote, date: e.target.value })}
+                  className="border p-2 mr-2"
+              />
+              <input
+                  type="text"
+                  name="writer"
+                  placeholder="Writer"
+                  value={editingQuote.writer}
+                  onChange={(e) => setEditingQuote({ ...editingQuote, writer: e.target.value })}
+                  className="border p-2 mr-2"
+              />
+              <button onClick={handleUpdateQuote} className="bg-green-500 text-white p-2">Update Quote</button>
+            </div>
+        )}
+      </div>
   );
 }
 
