@@ -6,6 +6,14 @@ dotenv.config();
 
 const app = express();
 
+// Middleware to add CORS headers
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://quotes.rezex.my.id'); // Replace with your frontend URL
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    next();
+});
+
 // Forward API requests to the backend
 app.use('/api', createProxyMiddleware({
     target: 'http://fi9.bot-hosting.net:21266', // Backend URL
