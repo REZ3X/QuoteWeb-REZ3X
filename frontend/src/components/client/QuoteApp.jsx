@@ -21,7 +21,7 @@ const QuoteApp = () => {
 
   const fetchQuotes = async () => {
     try {
-      const response = await axios.get(`${API_URL}/quotes`, { withCredentials: true });
+      const response = await axios.get(`${API_URL}/quotes`);
       setQuotes(response.data);
     } catch (error) {
       console.error('Error fetching quotes:', error);
@@ -29,30 +29,30 @@ const QuoteApp = () => {
   };
 
   const filteredQuotes = quotes.filter(quote =>
-    quote.quote.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    quote.date.toLowerCase().includes(searchQuery.toLowerCase())
+      quote.quote.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      quote.date.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <Router>
-      <Header />
-      <div className='flex flex-col min-h-screen'>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-                <QuoteList quotes={filteredQuotes} />
-              </>
-            }
-          />
-          <Route path="/admin" element={<AdminApp />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </div>
-      <Footer />
-    </Router>
+      <Router>
+        <Header />
+        <div className='flex flex-col min-h-screen'>
+          <Routes>
+            <Route
+                path="/"
+                element={
+                  <>
+                    <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                    <QuoteList quotes={filteredQuotes} />
+                  </>
+                }
+            />
+            <Route path="/admin" element={<AdminApp />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </div>
+        <Footer />
+      </Router>
   );
 };
 
