@@ -32,6 +32,7 @@ const isAdmin = (req, res, next) => {
 };
 
 // Get all quotes
+
 router.get('/', isAuthenticated, (req, res) => {
   let query;
   let replacements;
@@ -71,46 +72,38 @@ router.put('/:id', isAuthenticated, (req, res) => {
   const { id } = req.params;
   const { quote, date, writer } = req.body;
   const userId = req.session.userId;
-  let query;
-  let replacements;
-  if (req.session.role === 'admin') {
-    query = 'UPDATE quotes SET quote = ?, date = ?, writer = ? WHERE id = ?';
-    replacements = [quote, date, writer, id];
-  } else {
-    query = 'UPDATE quotes SET quote = ?, date = ?, writer = ? WHERE id = ? AND user_id = ?';
-    replacements = [quote, date, writer, id, userId];
-  }
-  sequelize.query(query, { replacements, type: sequelize.QueryTypes.UPDATE })
-      .then(() => {
-        res.json({ id, quote, date, writer });
-      })
-      .catch((err) => {
-        console.error('Error updating quote:', err);
-        res.status(500).json({ error: err.message });
-      });
+
+  const query = 'UPDATE quotes SET quote = ?, date = ?, writer = ? WHERE id = ? AND (user_id = ? OR ? = ?)';
+  console.log('Update query:', query);
+  console.log('Replacements:', [quote, date, writer, id, userId, req.session.role, 'admin']);
+  sequelize.query(query, { replacements: [quote, date, writer, id, userId, req.session.role, 'admin'], type: sequelize.QueryTypes.UPDATE })
+    .then(() => {
+      res.json({ id, quote, date, writer });
+    })
+    .catch((err) => {
+      console.error('Error updating quote:', err);
+      res.status(500).json({ error: err.message });
+    });
+
 });
 
 // Delete a quote
 router.delete('/:id', isAuthenticated, (req, res) => {
   const { id } = req.params;
   const userId = req.session.userId;
-  let query;
-  let replacements;
-  if (req.session.role === 'admin') {
-    query = 'DELETE FROM quotes WHERE id = ?';
-    replacements = [id];
-  } else {
-    query = 'DELETE FROM quotes WHERE id = ? AND user_id = ?';
-    replacements = [id, userId];
-  }
-  sequelize.query(query, { replacements, type: sequelize.QueryTypes.DELETE })
-      .then(() => {
-        res.json({ message: 'Quote deleted successfully' });
-      })
-      .catch((err) => {
-        console.error('Error deleting quote:', err);
-        res.status(500).json({ error: err.message });
-      });
+
+  const query = 'DELETE FROM quotes WHERE id = ? AND (user_id = ? OR ? = ?)';
+  console.log('Delete query:', query);
+  console.log('Replacements:', [id, userId, req.session.role, 'admin']);
+  sequelize.query(query, { replacements: [id, userId, req.session.role, 'admin'], type: sequelize.QueryTypes.DELETE })
+    .then(() => {
+      res.json({ message: 'Quote deleted successfully' });
+    })
+    .catch((err) => {
+      console.error('Error deleting quote:', err);
+      res.status(500).json({ error: err.message });
+    });
+
 });
 
 module.exports = router;
