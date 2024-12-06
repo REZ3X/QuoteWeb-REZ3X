@@ -43,12 +43,12 @@ router.get('/', isAuthenticated, (req, res) => {
     replacements = [req.session.userId];
   }
   sequelize.query(query, { replacements, type: sequelize.QueryTypes.SELECT })
-    .then((results) => {
-      res.json(results);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
+      .then((results) => {
+        res.json(results);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
 });
 
 // Add a new quote
@@ -58,12 +58,12 @@ router.post('/', isAuthenticated, (req, res) => {
   const query = 'INSERT INTO quotes (quote, date, writer, user_id) VALUES (?, ?, ?, ?)';
   const currentDate = date || new Date().toISOString().split('T')[0]; // Use current date if date is not provided
   sequelize.query(query, { replacements: [quote, currentDate, writer, userId], type: sequelize.QueryTypes.INSERT })
-    .then((results) => {
-      res.json({ id: results[0], quote, date: currentDate, writer, user_id: userId });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
+      .then((results) => {
+        res.json({ id: results[0], quote, date: currentDate, writer, user_id: userId });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
 });
 
 // Update a quote
@@ -81,13 +81,13 @@ router.put('/:id', isAuthenticated, (req, res) => {
     replacements = [quote, date, writer, id, userId];
   }
   sequelize.query(query, { replacements, type: sequelize.QueryTypes.UPDATE })
-    .then(() => {
-      res.json({ id, quote, date, writer });
-    })
-    .catch((err) => {
-      console.error('Error updating quote:', err);
-      res.status(500).json({ error: err.message });
-    });
+      .then(() => {
+        res.json({ id, quote, date, writer });
+      })
+      .catch((err) => {
+        console.error('Error updating quote:', err);
+        res.status(500).json({ error: err.message });
+      });
 });
 
 // Delete a quote
@@ -104,13 +104,13 @@ router.delete('/:id', isAuthenticated, (req, res) => {
     replacements = [id, userId];
   }
   sequelize.query(query, { replacements, type: sequelize.QueryTypes.DELETE })
-    .then(() => {
-      res.json({ message: 'Quote deleted successfully' });
-    })
-    .catch((err) => {
-      console.error('Error deleting quote:', err);
-      res.status(500).json({ error: err.message });
-    });
+      .then(() => {
+        res.json({ message: 'Quote deleted successfully' });
+      })
+      .catch((err) => {
+        console.error('Error deleting quote:', err);
+        res.status(500).json({ error: err.message });
+      });
 });
 
 module.exports = router;
