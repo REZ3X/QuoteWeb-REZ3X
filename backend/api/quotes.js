@@ -32,14 +32,24 @@ const isAdmin = (req, res, next) => {
 };
 
 // Get all quotes
-router.get('/', (req, res) => {
-  sequelize.query('SELECT * FROM quotes', { type: sequelize.QueryTypes.SELECT })
-    .then((results) => {
-      res.json(results);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
+
+router.get('/', isAuthenticated, (req, res) => {
+  let query;
+  let replacements;
+  if (req.session.role === 'admin') {
+    query = 'SELECT * FROM quotes';
+    replacements = [];
+  } else {
+    query = 'SELECT * FROM quotes WHERE user_id = ?';
+    replacements = [req.session.userId];
+  }
+  sequelize.query(query, { replacements, type: sequelize.QueryTypes.SELECT })
+      .then((results) => {
+        res.json(results);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
 });
 
 // Add a new quote
@@ -49,12 +59,12 @@ router.post('/', isAuthenticated, (req, res) => {
   const query = 'INSERT INTO quotes (quote, date, writer, user_id) VALUES (?, ?, ?, ?)';
   const currentDate = date || new Date().toISOString().split('T')[0]; // Use current date if date is not provided
   sequelize.query(query, { replacements: [quote, currentDate, writer, userId], type: sequelize.QueryTypes.INSERT })
-    .then((results) => {
-      res.json({ id: results[0], quote, date: currentDate, writer, user_id: userId });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
+      .then((results) => {
+        res.json({ id: results[0], quote, date: currentDate, writer, user_id: userId });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
 });
 
 // Update a quote
@@ -62,6 +72,7 @@ router.put('/:id', isAuthenticated, (req, res) => {
   const { id } = req.params;
   const { quote, date, writer } = req.body;
   const userId = req.session.userId;
+
   const query = 'UPDATE quotes SET quote = ?, date = ?, writer = ? WHERE id = ? AND (user_id = ? OR ? = ?)';
   console.log('Update query:', query);
   console.log('Replacements:', [quote, date, writer, id, userId, req.session.role, 'admin']);
@@ -73,12 +84,14 @@ router.put('/:id', isAuthenticated, (req, res) => {
       console.error('Error updating quote:', err);
       res.status(500).json({ error: err.message });
     });
+
 });
 
 // Delete a quote
 router.delete('/:id', isAuthenticated, (req, res) => {
   const { id } = req.params;
   const userId = req.session.userId;
+
   const query = 'DELETE FROM quotes WHERE id = ? AND (user_id = ? OR ? = ?)';
   console.log('Delete query:', query);
   console.log('Replacements:', [id, userId, req.session.role, 'admin']);
@@ -90,6 +103,7 @@ router.delete('/:id', isAuthenticated, (req, res) => {
       console.error('Error deleting quote:', err);
       res.status(500).json({ error: err.message });
     });
+
 });
 
 module.exports = router;
